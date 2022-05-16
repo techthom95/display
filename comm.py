@@ -40,16 +40,20 @@ def main(var, **data):
     while client.get_connected() == True:
         logger.info("connected with " + ip + ":" + str(port))
         try:
-            logger.debug("receiving data")
-            all_data = client.db_read(data.get('db'), 0, data.get('size'))
-            db_data = snap7.util.DB(0, all_data, data.get('layout'), 0, 1)
-            if var == "send":
-                logger.debug("sending data")
-                db_data[0][data.get('id')] = data.get('val')
-                client.db_write(data.get('db'), 0, db_data._bytearray)
+            if var != "check":
+                logger.debug("receiving data")
+                all_data = client.db_read(data.get('db'), 0, data.get('size'))
+                db_data = snap7.util.DB(0, all_data, data.get('layout'), 0, 1)
+                if var == "send":
+                    logger.debug("sending data")
+                    db_data[0][data.get('id')] = data.get('val')
+                    client.db_write(data.get('db'), 0, db_data._bytearray)
+                    return
+                if var == "recv":
+                    return db_data
+            else:
+                logger.debug("connection checked")
                 return
-            if var == "recv":
-                return db_data
         except Exception as e:
             logger.error(e)
             return -1
