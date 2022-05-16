@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # comm.py>
 from configparser import *
-import logging, snap7
+import logging, logging.config, snap7
 
+logging.config.dictConfig({'version': 1,'disable_existing_loggers': True,})
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
 
 # Define configuration
 def config():
@@ -21,6 +21,7 @@ def config():
 # Define main function
 def main(var, **data):
     # Read configuration
+    logger.debug("reading configuration")
     ip = config()[0]
     port = config()[1]
     if ip == -1 or port == -1:
@@ -28,6 +29,7 @@ def main(var, **data):
 
     # Connect to client
     try:
+        logger.debug("connecting with " + ip + ":" + str(port))
         client = snap7.client.Client()
         client.connect(ip, 0, 0, port)
     except Exception as e:
@@ -36,10 +38,13 @@ def main(var, **data):
     
     # While connected to client
     while client.get_connected() == True:
+        logger.info("connected with " + ip + ":" + str(port))
         try:
+            logger.debug("receiving data")
             all_data = client.db_read(data.get('db'), 0, data.get('size'))
             db_data = snap7.util.DB(0, all_data, data.get('layout'), 0, 1)
             if var == "send":
+                logger.debug("sending data")
                 db_data[0][data.get('id')] = data.get('val')
                 client.db_write(data.get('db'), 0, db_data._bytearray)
                 return
