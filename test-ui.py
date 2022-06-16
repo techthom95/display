@@ -45,7 +45,11 @@ def conn_check():
     else:
         connection['text'] = "Not connected"
         connection.config(bg="red")
-    root.after(time, conn_check)
+    if time == "0" and connection['text'] == "Connected":
+        connection['text'] = "Connected (Simulation Check = 0)"
+        connection.config(bg="orange")
+    if time != "0":
+        root.after(time, conn_check)
 
 def recv():
     if int(textbox1.get()) > 0 and textbox2.get() != "":
