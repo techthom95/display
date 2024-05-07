@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter import font
 from tkinter import messagebox
 from configparser import *
-import logging, comm
+import logging, comm as comm
 
 logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', datefmt='%H:%M:%S', level="DEBUG")
 logger = logging.getLogger(__name__)
